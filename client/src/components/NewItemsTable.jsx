@@ -1,99 +1,63 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 function NewItemsTable() {
-  const [items, setItems] = useState([]);
+  const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchNewItems();
-
-    // Subscribe to real-time changes
-    const channel = supabase
-      .channel("new-items-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "n8n_error_tracking",
-          filter: "status=eq.new",
-        },
-        (payload) => {
-          fetchNewItems();
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const fetchNewItems = async () => {
-    try {
+    const fetchErrors = async () => {
       const { data, error } = await supabase
-        .from("n8n_error_tracking")
-        .select("*")
-        .eq("status", "new")
+        .from("error") // make sure this matches your table name
+        .select(
+          "created_at, error_description, workflow_name, workflow_id, status, remarks",
+        )
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      setItems(data || []);
-    } catch (error) {
-      console.error("Error fetching new items:", error);
-    } finally {
+      if (error) {
+        console.log("Error:", error.message);
+      } else {
+        setErrors(data);
+      }
+
       setLoading(false);
-    }
-  };
+    };
 
-  const markAsDone = async (id) => {
-    try {
-      const { error } = await supabase
-        .from("n8n_error_tracking")
-        .update({ status: "done", updated_at: new Date().toISOString() })
-        .eq("id", id);
-
-      if (error) throw error;
-      // Item will be removed from the list via real-time subscription
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
-  };
-
-  if (loading) return <div>Loading...</div>;
+    fetchErrors();
+  }, []);
 
   return (
-    <div style={{ marginBottom: "40px" }}>
-      <h2>New Items</h2>
-      {items.length === 0 ? (
-        <p>No new items</p>
+    <div style={{ padding: "20px" }}>
+      <h1>Error Tracker</h1>
+
+      {loading ? (
+        <p>Loading...</p>
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <table
+          border="1"
+          cellPadding="10"
+          style={{ width: "100%", borderCollapse: "collapse" }}
+        >
           <thead>
             <tr>
-              <th style={styles.th}>Workflow Name</th>
-              <th style={styles.th}>Error Message</th>
-              <th style={styles.th}>Created At</th>
-              <th style={styles.th}>Action</th>
+              <th>Created At</th>
+              <th>Error Description</th>
+              <th>Workflow Name</th>
+              <th>Workflow ID</th>
+              <th>Status</th>
+              <th>Remarks</th>
             </tr>
           </thead>
+
           <tbody>
-            {items.map((item) => (
-              <tr key={item.id} style={styles.tr}>
-                <td style={styles.td}>{item.workflow_name}</td>
-                <td style={styles.td}>{item.error_message}</td>
-                <td style={styles.td}>
-                  {new Date(item.created_at).toLocaleString()}
-                </td>
-                <td style={styles.td}>
-                  <button
-                    onClick={() => markAsDone(item.id)}
-                    style={styles.button}
-                  >
-                    Mark Done
-                  </button>
-                </td>
+            {errors.map((err, index) => (
+              <tr key={index}>
+                <td>{new Date(err.created_at).toLocaleString()}</td>
+                <td>{err.error_description}</td>
+                <td>{err.workflow_name}</td>
+                <td>{err.workflow_id}</td>
+                <td>{err.status}</td>
+                <td>{err.remarks || "-"}</td>
               </tr>
             ))}
           </tbody>
@@ -102,24 +66,5 @@ function NewItemsTable() {
     </div>
   );
 }
-
-const styles = {
-  th: {
-    border: "1px solid #ddd",
-    padding: "8px",
-    textAlign: "left",
-    backgroundColor: "#f5f5f5",
-  },
-  td: { border: "1px solid #ddd", padding: "8px" },
-  tr: { backgroundColor: "#fff" },
-  button: {
-    padding: "6px 12px",
-    backgroundColor: "#4CAF50",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
-};
 
 export default NewItemsTable;

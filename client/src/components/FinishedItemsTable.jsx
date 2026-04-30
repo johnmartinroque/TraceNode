@@ -59,7 +59,9 @@ function FinishedItemsTable() {
           <thead>
             <tr>
               <th style={styles.th}>Workflow Name</th>
-              <th style={styles.th}>Error Message</th>
+              <th style={styles.th}>Workflow ID</th>
+              <th style={styles.th}>Error Description</th>
+              <th style={styles.th}>Remarks</th>
               <th style={styles.th}>Created At</th>
               <th style={styles.th}>Completed At</th>
             </tr>
@@ -68,7 +70,9 @@ function FinishedItemsTable() {
             {items.map((item) => (
               <tr key={item.id} style={styles.tr}>
                 <td style={styles.td}>{item.workflow_name}</td>
-                <td style={styles.td}>{item.error_message}</td>
+                <td style={styles.td}>{item.workflow_id}</td>
+                <td style={styles.td}>{item.error_description}</td>
+                <td style={styles.td}>{item.remarks || '-'}</td>
                 <td style={styles.td}>
                   {new Date(item.created_at).toLocaleString()}
                 </td>
