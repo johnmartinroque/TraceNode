@@ -8,7 +8,7 @@ function NewItemsTable() {
   useEffect(() => {
     const fetchErrors = async () => {
       const { data, error } = await supabase
-        .from("error") // make sure this matches your table name
+        .from("error")
         .select(
           "created_at, error_description, workflow_name, workflow_id, status, remarks",
         )
@@ -26,38 +26,36 @@ function NewItemsTable() {
     fetchErrors();
   }, []);
 
-  return (
-    <div style={{ padding: "20px" }}>
-      <h1>Error Tracker</h1>
+  if (loading) return <div>Loading...</div>;
 
-      {loading ? (
-        <p>Loading...</p>
+  return (
+    <div>
+      <h2>New Items</h2>
+      {errors.length === 0 ? (
+        <p>No new items</p>
       ) : (
-        <table
-          border="1"
-          cellPadding="10"
-          style={{ width: "100%", borderCollapse: "collapse" }}
-        >
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
-              <th>Created At</th>
-              <th>Error Description</th>
-              <th>Workflow Name</th>
-              <th>Workflow ID</th>
-              <th>Status</th>
-              <th>Remarks</th>
+              <th style={styles.th}>Created At</th>
+              <th style={styles.th}>Error Description</th>
+              <th style={styles.th}>Workflow Name</th>
+              <th style={styles.th}>Workflow ID</th>
+              <th style={styles.th}>Status</th>
+              <th style={styles.th}>Remarks</th>
             </tr>
           </thead>
-
           <tbody>
-            {errors.map((err, index) => (
-              <tr key={index}>
-                <td>{new Date(err.created_at).toLocaleString()}</td>
-                <td>{err.error_description}</td>
-                <td>{err.workflow_name}</td>
-                <td>{err.workflow_id}</td>
-                <td>{err.status}</td>
-                <td>{err.remarks || "-"}</td>
+            {errors.map((err) => (
+              <tr key={err.id} style={styles.tr}>
+                <td style={styles.td}>
+                  {new Date(err.created_at).toLocaleString()}
+                </td>
+                <td style={styles.td}>{err.error_description}</td>
+                <td style={styles.td}>{err.workflow_name}</td>
+                <td style={styles.td}>{err.workflow_id}</td>
+                <td style={styles.td}>{err.status}</td>
+                <td style={styles.td}>{err.remarks || "-"}</td>
               </tr>
             ))}
           </tbody>
@@ -66,5 +64,16 @@ function NewItemsTable() {
     </div>
   );
 }
+
+const styles = {
+  th: {
+    border: "1px solid #ddd",
+    padding: "8px",
+    textAlign: "left",
+    backgroundColor: "#f5f5f5",
+  },
+  td: { border: "1px solid #ddd", padding: "8px" },
+  tr: { backgroundColor: "#fff" },
+};
 
 export default NewItemsTable;

@@ -16,8 +16,8 @@ function FinishedItemsTable() {
         {
           event: "*",
           schema: "public",
-          table: "n8n_error_tracking",
-          filter: "status=eq.done",
+          table: "error",
+          filter: "status=eq.Done",
         },
         (payload) => {
           fetchFinishedItems();
@@ -33,10 +33,12 @@ function FinishedItemsTable() {
   const fetchFinishedItems = async () => {
     try {
       const { data, error } = await supabase
-        .from("n8n_error_tracking")
-        .select("*")
-        .eq("status", "done")
-        .order("updated_at", { ascending: false });
+        .from("error")
+        .select(
+          "created_at, error_description, workflow_name, workflow_id, status, remarks",
+        )
+        .eq("status", "Done")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setItems(data || []);
@@ -58,27 +60,25 @@ function FinishedItemsTable() {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
+              <th style={styles.th}>Created At</th>
+              <th style={styles.th}>Error Description</th>
               <th style={styles.th}>Workflow Name</th>
               <th style={styles.th}>Workflow ID</th>
-              <th style={styles.th}>Error Description</th>
+              <th style={styles.th}>Status</th>
               <th style={styles.th}>Remarks</th>
-              <th style={styles.th}>Created At</th>
-              <th style={styles.th}>Completed At</th>
             </tr>
           </thead>
           <tbody>
             {items.map((item) => (
               <tr key={item.id} style={styles.tr}>
-                <td style={styles.td}>{item.workflow_name}</td>
-                <td style={styles.td}>{item.workflow_id}</td>
-                <td style={styles.td}>{item.error_description}</td>
-                <td style={styles.td}>{item.remarks || '-'}</td>
                 <td style={styles.td}>
                   {new Date(item.created_at).toLocaleString()}
                 </td>
-                <td style={styles.td}>
-                  {new Date(item.updated_at).toLocaleString()}
-                </td>
+                <td style={styles.td}>{item.error_description}</td>
+                <td style={styles.td}>{item.workflow_name}</td>
+                <td style={styles.td}>{item.workflow_id}</td>
+                <td style={styles.td}>{item.status}</td>
+                <td style={styles.td}>{item.remarks || "-"}</td>
               </tr>
             ))}
           </tbody>
