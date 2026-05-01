@@ -34,28 +34,48 @@ function NewItemsTable() {
       {errors.length === 0 ? (
         <p>No new items</p>
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th style={styles.th}>Created At</th>
-              <th style={styles.th}>Error Description</th>
-              <th style={styles.th}>Workflow Name</th>
-              <th style={styles.th}>Workflow ID</th>
-              <th style={styles.th}>Status</th>
-              <th style={styles.th}>Remarks</th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Created At
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Error Description
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Workflow Name
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Workflow ID
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Status
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Remarks
+              </th>
             </tr>
           </thead>
           <tbody>
             {errors.map((err) => (
-              <tr key={err.id} style={styles.tr}>
-                <td style={styles.td}>
+              <tr key={err.id} className="bg-white">
+                <td className="border border-gray-300 p-2">
                   {new Date(err.created_at).toLocaleString()}
                 </td>
-                <td style={styles.td}>{err.error_description}</td>
-                <td style={styles.td}>{err.workflow_name}</td>
-                <td style={styles.td}>{err.workflow_id}</td>
-                <td style={styles.td}>{err.status}</td>
-                <td style={styles.td}>{err.remarks || "-"}</td>
+                <td className="border border-gray-300 p-2">
+                  {err.error_description}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {err.workflow_name}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {err.workflow_id}
+                </td>
+                <td className="border border-gray-300 p-2">{err.status}</td>
+                <td className="border border-gray-300 p-2">
+                  {err.remarks || "-"}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -64,16 +84,5 @@ function NewItemsTable() {
     </div>
   );
 }
-
-const styles = {
-  th: {
-    border: "1px solid #ddd",
-    padding: "8px",
-    textAlign: "left",
-    backgroundColor: "#f5f5f5",
-  },
-  td: { border: "1px solid #ddd", padding: "8px" },
-  tr: { backgroundColor: "#fff" },
-};
 
 export default NewItemsTable;

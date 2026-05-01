@@ -57,28 +57,48 @@ function FinishedItemsTable() {
       {items.length === 0 ? (
         <p>No finished items</p>
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th style={styles.th}>Created At</th>
-              <th style={styles.th}>Error Description</th>
-              <th style={styles.th}>Workflow Name</th>
-              <th style={styles.th}>Workflow ID</th>
-              <th style={styles.th}>Status</th>
-              <th style={styles.th}>Remarks</th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Created At
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Error Description
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Workflow Name
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Workflow ID
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Status
+              </th>
+              <th className="border border-gray-300 p-2 text-left bg-gray-100">
+                Remarks
+              </th>
             </tr>
           </thead>
           <tbody>
             {items.map((item) => (
-              <tr key={item.id} style={styles.tr}>
-                <td style={styles.td}>
+              <tr key={item.id} className="bg-white">
+                <td className="border border-gray-300 p-2">
                   {new Date(item.created_at).toLocaleString()}
                 </td>
-                <td style={styles.td}>{item.error_description}</td>
-                <td style={styles.td}>{item.workflow_name}</td>
-                <td style={styles.td}>{item.workflow_id}</td>
-                <td style={styles.td}>{item.status}</td>
-                <td style={styles.td}>{item.remarks || "-"}</td>
+                <td className="border border-gray-300 p-2">
+                  {item.error_description}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {item.workflow_name}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {item.workflow_id}
+                </td>
+                <td className="border border-gray-300 p-2">{item.status}</td>
+                <td className="border border-gray-300 p-2">
+                  {item.remarks || "-"}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -87,16 +107,5 @@ function FinishedItemsTable() {
     </div>
   );
 }
-
-const styles = {
-  th: {
-    border: "1px solid #ddd",
-    padding: "8px",
-    textAlign: "left",
-    backgroundColor: "#f5f5f5",
-  },
-  td: { border: "1px solid #ddd", padding: "8px" },
-  tr: { backgroundColor: "#fff" },
-};
 
 export default FinishedItemsTable;
