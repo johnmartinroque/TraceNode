@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 
-function FinishedItemsTable() {
+function FinishedItemsTable({
+  selectedIds = [],
+  onSelectItem,
+  disableSelection,
+}) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +39,7 @@ function FinishedItemsTable() {
       const { data, error } = await supabase
         .from("error")
         .select(
-          "created_at, error_description, workflow_name, workflow_id, status, remarks",
+          "id, created_at, error_description, workflow_name, workflow_id, status, remarks",
         )
         .eq("status", "Done")
         .order("created_at", { ascending: false });
@@ -60,6 +64,9 @@ function FinishedItemsTable() {
         <table className="w-full border-collapse">
           <thead>
             <tr>
+              <th className="border border-gray-300 p-2 text-center bg-gray-100">
+                Select
+              </th>
               <th className="border border-gray-300 p-2 text-left bg-gray-100">
                 Created At
               </th>
@@ -83,6 +90,16 @@ function FinishedItemsTable() {
           <tbody>
             {items.map((item) => (
               <tr key={item.id} className="bg-white">
+                <td className="border border-gray-300 p-2 text-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(item.id)}
+                    disabled={disableSelection}
+                    onChange={(event) =>
+                      onSelectItem?.(item.id, event.target.checked)
+                    }
+                  />
+                </td>
                 <td className="border border-gray-300 p-2">
                   {new Date(item.created_at).toLocaleString()}
                 </td>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
-function NewItemsTable() {
+function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -10,7 +10,7 @@ function NewItemsTable() {
       const { data, error } = await supabase
         .from("error")
         .select(
-          "created_at, error_description, workflow_name, workflow_id, status, remarks",
+          "id, created_at, error_description, workflow_name, workflow_id, status, remarks",
         )
         .order("created_at", { ascending: false });
 
@@ -37,6 +37,9 @@ function NewItemsTable() {
         <table className="w-full border-collapse">
           <thead>
             <tr>
+              <th className="border border-gray-300 p-2 text-center bg-gray-100">
+                Select
+              </th>
               <th className="border border-gray-300 p-2 text-left bg-gray-100">
                 Created At
               </th>
@@ -60,6 +63,16 @@ function NewItemsTable() {
           <tbody>
             {errors.map((err) => (
               <tr key={err.id} className="bg-white">
+                <td className="border border-gray-300 p-2 text-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(err.id)}
+                    disabled={disableSelection}
+                    onChange={(event) =>
+                      onSelectItem?.(err.id, event.target.checked)
+                    }
+                  />
+                </td>
                 <td className="border border-gray-300 p-2">
                   {new Date(err.created_at).toLocaleString()}
                 </td>
