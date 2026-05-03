@@ -13,6 +13,7 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
         .select(
           "id, created_at, error_description, workflow_name, workflow_id, status, remarks",
         )
+        .eq("status", "New")
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -41,9 +42,9 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
 
     // Update local state instantly
     setErrors((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, status: newStatus } : item,
-      ),
+      prev
+        .map((item) => (item.id === id ? { ...item, status: newStatus } : item))
+        .filter((item) => item.status === "New"),
     );
 
     setOpenDropdownId(null);
