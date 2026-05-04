@@ -9,7 +9,6 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
   useEffect(() => {
     fetchErrors();
 
-    // Realtime listener for instant backend updates
     const channel = supabase
       .channel("new-items-changes")
       .on(
@@ -51,14 +50,19 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
     setLoading(false);
   };
 
-  // Update status in Supabase backend
-  const updateStatus = async (id, newStatus) => {
+  // Bulk or single status update
+  const updateStatus = async (clickedId, newStatus) => {
     try {
-      const { data, error } = await supabase
+      // If multiple selected, update all selected
+      const idsToUpdate =
+        selectedIds.length > 0 && selectedIds.includes(clickedId)
+          ? selectedIds
+          : [clickedId];
+
+      const { error } = await supabase
         .from("error")
         .update({ status: newStatus })
-        .eq("id", id)
-        .select();
+        .in("id", idsToUpdate);
 
       if (error) {
         console.log("Update Error:", error.message);
@@ -66,18 +70,27 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
         return;
       }
 
-      console.log("Updated Successfully:", data);
+      console.log("Updated IDs:", idsToUpdate);
 
-      // Remove item instantly from New table if changed to Done
+      // Remove all updated items from New table if Done
       if (newStatus === "Done") {
-        setErrors((prev) => prev.filter((item) => item.id !== id));
+        setErrors((prev) =>
+          prev.filter((item) => !idsToUpdate.includes(item.id)),
+        );
       } else {
         setErrors((prev) =>
           prev.map((item) =>
-            item.id === id ? { ...item, status: newStatus } : item,
+            idsToUpdate.includes(item.id)
+              ? { ...item, status: newStatus }
+              : item,
           ),
         );
       }
+
+      // Optional: uncheck all after update
+      idsToUpdate.forEach((id) => {
+        onSelectItem?.(id, false);
+      });
 
       setOpenDropdownId(null);
     } catch (err) {
@@ -177,14 +190,14 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
                         onClick={() => updateStatus(err.id, "New")}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                       >
-                        New
+                        Update Selected to New
                       </button>
 
                       <button
                         onClick={() => updateStatus(err.id, "Done")}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                       >
-                        Done
+                        Update Selected to Done
                       </button>
                     </div>
                   )}
