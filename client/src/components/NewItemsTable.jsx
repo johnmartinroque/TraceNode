@@ -7,47 +7,82 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
   const [openDropdownId, setOpenDropdownId] = useState(null);
 
   useEffect(() => {
-    const fetchErrors = async () => {
-      const { data, error } = await supabase
-        .from("error")
-        .select(
-          "id, created_at, error_description, workflow_name, workflow_id, status, remarks",
-        )
-        .eq("status", "New")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.log("Error:", error.message);
-      } else {
-        setErrors(data);
-      }
-
-      setLoading(false);
-    };
-
     fetchErrors();
+
+    // Realtime listener for instant backend updates
+    const channel = supabase
+      .channel("new-items-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "error",
+        },
+        () => {
+          fetchErrors();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  // Update status in Supabase
-  const updateStatus = async (id, newStatus) => {
-    const { error } = await supabase
+  // Fetch only New items
+  const fetchErrors = async () => {
+    setLoading(true);
+
+    const { data, error } = await supabase
       .from("error")
-      .update({ status: newStatus })
-      .eq("id", id);
+      .select(
+        "id, created_at, error_description, workflow_name, workflow_id, status, remarks",
+      )
+      .eq("status", "New")
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.log("Update Error:", error.message);
-      return;
+      console.log("Fetch Error:", error.message);
+    } else {
+      setErrors(data || []);
     }
 
-    // Update local state instantly
-    setErrors((prev) =>
-      prev
-        .map((item) => (item.id === id ? { ...item, status: newStatus } : item))
-        .filter((item) => item.status === "New"),
-    );
+    setLoading(false);
+  };
 
-    setOpenDropdownId(null);
+  // Update status in Supabase backend
+  const updateStatus = async (id, newStatus) => {
+    try {
+      const { data, error } = await supabase
+        .from("error")
+        .update({ status: newStatus })
+        .eq("id", id)
+        .select();
+
+      if (error) {
+        console.log("Update Error:", error.message);
+        alert("Failed to update status");
+        return;
+      }
+
+      console.log("Updated Successfully:", data);
+
+      // Remove item instantly from New table if changed to Done
+      if (newStatus === "Done") {
+        setErrors((prev) => prev.filter((item) => item.id !== id));
+      } else {
+        setErrors((prev) =>
+          prev.map((item) =>
+            item.id === id ? { ...item, status: newStatus } : item,
+          ),
+        );
+      }
+
+      setOpenDropdownId(null);
+    } catch (err) {
+      console.log("Unexpected Error:", err.message);
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -121,7 +156,7 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
                   {err.workflow_id}
                 </td>
 
-                {/* Clickable Status */}
+                {/* Status Popover */}
                 <td className="border border-gray-300 p-2 relative">
                   <button
                     onClick={() =>
@@ -133,10 +168,9 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
                       err.status === "Done" ? "bg-green-500" : "bg-blue-500"
                     }`}
                   >
-                    {err.status || "New"}
+                    {err.status}
                   </button>
 
-                  {/* Popover Dropdown */}
                   {openDropdownId === err.id && (
                     <div className="absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg w-28">
                       <button
@@ -145,6 +179,7 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
                       >
                         New
                       </button>
+
                       <button
                         onClick={() => updateStatus(err.id, "Done")}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
