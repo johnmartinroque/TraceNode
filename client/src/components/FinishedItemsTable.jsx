@@ -22,7 +22,6 @@ function FinishedItemsTable({
           event: "*",
           schema: "public",
           table: "error",
-          filter: "status=eq.Done",
         },
         () => {
           fetchFinishedItems();
@@ -35,7 +34,10 @@ function FinishedItemsTable({
     };
   }, []);
 
+  // Fetch only Done items
   const fetchFinishedItems = async () => {
+    setLoading(true);
+
     try {
       const { data, error } = await supabase
         .from("error")
@@ -46,38 +48,54 @@ function FinishedItemsTable({
         .order("created_at", { ascending: false });
 
       if (error) throw error;
+
       setItems(data || []);
     } catch (error) {
-      console.error("Error fetching finished items:", error);
+      console.error("Error fetching finished items:", error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // Update status in Supabase
-  const updateStatus = async (id, newStatus) => {
+  // Bulk or single status update (same logic as NewItemsTable)
+  // Replace ONLY your updateStatus function inside FinishedItemsTable with this:
+
+  const updateStatus = async (clickedId, newStatus) => {
     try {
+      // If multiple selected and clicked row is included, update all selected
+      const idsToUpdate =
+        selectedIds.length > 0 && selectedIds.includes(clickedId)
+          ? selectedIds
+          : [clickedId];
+
       const { error } = await supabase
         .from("error")
         .update({ status: newStatus })
-        .eq("id", id);
+        .in("id", idsToUpdate);
 
-      if (error) throw error;
-
-      // If moved from Done to New, remove from this table instantly
-      if (newStatus === "New") {
-        setItems((prev) => prev.filter((item) => item.id !== id));
-      } else {
-        setItems((prev) =>
-          prev.map((item) =>
-            item.id === id ? { ...item, status: newStatus } : item,
-          ),
-        );
+      if (error) {
+        console.error("Update Error:", error.message);
+        alert("Failed to update status");
+        return;
       }
 
+      console.log("Updated IDs:", idsToUpdate);
+
+      // Just update status locally — DO NOT REMOVE ITEMS
+      setItems((prev) =>
+        prev.map((item) =>
+          idsToUpdate.includes(item.id) ? { ...item, status: newStatus } : item,
+        ),
+      );
+
+      // Optional: uncheck all after update
+      idsToUpdate.forEach((id) => {
+        onSelectItem?.(id, false);
+      });
+
       setOpenDropdownId(null);
-    } catch (error) {
-      console.error("Update Error:", error);
+    } catch (err) {
+      console.error("Unexpected Error:", err.message);
     }
   };
 
@@ -152,7 +170,7 @@ function FinishedItemsTable({
                   {item.workflow_id}
                 </td>
 
-                {/* Clickable Status */}
+                {/* Status Popover */}
                 <td className="border border-gray-300 p-2 relative">
                   <button
                     onClick={() =>
@@ -164,23 +182,23 @@ function FinishedItemsTable({
                       item.status === "Done" ? "bg-green-500" : "bg-blue-500"
                     }`}
                   >
-                    {item.status || "Done"}
+                    {item.status}
                   </button>
 
-                  {/* Popover Dropdown */}
                   {openDropdownId === item.id && (
-                    <div className="absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg w-28">
+                    <div className="absolute z-10 mt-2 bg-white border border-gray-300 rounded shadow-lg w-40">
                       <button
                         onClick={() => updateStatus(item.id, "New")}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                       >
-                        New
+                        Update Selected to New
                       </button>
+
                       <button
                         onClick={() => updateStatus(item.id, "Done")}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                       >
-                        Done
+                        Update Selected to Done
                       </button>
                     </div>
                   )}
