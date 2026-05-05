@@ -136,7 +136,10 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
 
           <tbody>
             {errors.map((err) => (
-              <tr key={err.id} className="bg-white">
+              <tr
+                key={err.id}
+                className={`bg-white ${selectedIds.includes(err.id) ? "bg-blue-100" : ""}`}
+              >
                 {/* Checkbox */}
                 <td className="border border-gray-300 p-2 text-center">
                   <input

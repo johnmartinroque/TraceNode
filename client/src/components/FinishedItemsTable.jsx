@@ -60,9 +60,10 @@ function FinishedItemsTable({
   // Bulk or single status update (same logic as NewItemsTable)
   // Replace ONLY your updateStatus function inside FinishedItemsTable with this:
 
+  // Bulk or single status update
   const updateStatus = async (clickedId, newStatus) => {
     try {
-      // If multiple selected and clicked row is included, update all selected
+      // If multiple selected, update all selected
       const idsToUpdate =
         selectedIds.length > 0 && selectedIds.includes(clickedId)
           ? selectedIds
@@ -74,19 +75,28 @@ function FinishedItemsTable({
         .in("id", idsToUpdate);
 
       if (error) {
-        console.error("Update Error:", error.message);
+        console.log("Update Error:", error.message);
         alert("Failed to update status");
         return;
       }
 
       console.log("Updated IDs:", idsToUpdate);
 
-      // Just update status locally — DO NOT REMOVE ITEMS
-      setItems((prev) =>
-        prev.map((item) =>
-          idsToUpdate.includes(item.id) ? { ...item, status: newStatus } : item,
-        ),
-      );
+      // Remove all updated items from Finished table if moved to New
+      if (newStatus === "New") {
+        setItems((prev) =>
+          prev.filter((item) => !idsToUpdate.includes(item.id)),
+        );
+      } else {
+        // Keep them if still Done
+        setItems((prev) =>
+          prev.map((item) =>
+            idsToUpdate.includes(item.id)
+              ? { ...item, status: newStatus }
+              : item,
+          ),
+        );
+      }
 
       // Optional: uncheck all after update
       idsToUpdate.forEach((id) => {
@@ -95,7 +105,7 @@ function FinishedItemsTable({
 
       setOpenDropdownId(null);
     } catch (err) {
-      console.error("Unexpected Error:", err.message);
+      console.log("Unexpected Error:", err.message);
     }
   };
 
@@ -137,7 +147,10 @@ function FinishedItemsTable({
 
           <tbody>
             {items.map((item) => (
-              <tr key={item.id} className="bg-white">
+              <tr
+                key={item.id}
+                className={`bg-white ${selectedIds.includes(item.id) ? "bg-blue-100" : ""}`}
+              >
                 {/* Checkbox */}
                 <td className="border border-gray-300 p-2 text-center">
                   <input
