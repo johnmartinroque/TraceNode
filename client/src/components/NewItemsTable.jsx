@@ -18,11 +18,14 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
           schema: "public",
           table: "error",
         },
-        () => {
-          fetchErrors();
+        (payload) => {
+          console.log("Realtime Update:", payload);
+          fetchErrors(); // Always refetch latest New items
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Realtime Status:", status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
@@ -88,11 +91,13 @@ function NewItemsTable({ selectedIds = [], onSelectItem, disableSelection }) {
       }
 
       // Optional: uncheck all after update
+      // Optional: uncheck all after update
       idsToUpdate.forEach((id) => {
         onSelectItem?.(id, false);
       });
 
       setOpenDropdownId(null);
+      fetchErrors();
     } catch (err) {
       console.log("Unexpected Error:", err.message);
     }
