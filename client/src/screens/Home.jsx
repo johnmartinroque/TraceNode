@@ -47,20 +47,8 @@ function Home() {
 
   return (
     <div>
-      <NewItemsTable
-        selectedIds={selectedItemIds.new}
-        onSelectItem={(itemId, checked) =>
-          handleSelectionChange("new", itemId, checked)
-        }
-        disableSelection={selectedTable === "finished"}
-      />
-      <FinishedItemsTable
-        selectedIds={selectedItemIds.finished}
-        onSelectItem={(itemId, checked) =>
-          handleSelectionChange("finished", itemId, checked)
-        }
-        disableSelection={selectedTable === "new"}
-      />
+      <NewItemsTable />
+      <FinishedItemsTable />
     </div>
   );
 }
