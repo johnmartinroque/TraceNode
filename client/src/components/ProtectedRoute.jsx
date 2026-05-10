@@ -1,16 +1,22 @@
+// ProtectedRoute.jsx
 import { Navigate } from "react-router-dom";
 
 function ProtectedRoute({ children, fallback = "/" }) {
-  // Check if user is logged in by checking localStorage
-  const user = localStorage.getItem("user");
-  const session = localStorage.getItem("session");
+  const userInfo = localStorage.getItem("userInfo");
 
-  // If user and session exist, render the protected component
-  if (user && session) {
-    return children;
+  if (userInfo) {
+    try {
+      const parsedUser = JSON.parse(userInfo);
+
+      // Check token + user exist
+      if (parsedUser?.access_token && parsedUser?.user) {
+        return children;
+      }
+    } catch (error) {
+      console.error("Invalid userInfo in localStorage");
+    }
   }
 
-  // If no user logged in, navigate to fallback (landing page or login)
   return <Navigate to={fallback} replace />;
 }
 

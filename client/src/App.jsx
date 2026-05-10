@@ -8,12 +8,18 @@ import Register from "./screens/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function HomeScreen() {
-  // Check if user is logged in
-  const user = localStorage.getItem("user");
-  const session = localStorage.getItem("session");
+  const userInfo = localStorage.getItem("userInfo");
 
-  if (user && session) {
-    return <Home />;
+  if (userInfo) {
+    try {
+      const parsedUser = JSON.parse(userInfo);
+
+      if (parsedUser?.access_token && parsedUser?.user) {
+        return <Home />;
+      }
+    } catch (error) {
+      console.error("Invalid userInfo");
+    }
   }
 
   return <LandingPage />;

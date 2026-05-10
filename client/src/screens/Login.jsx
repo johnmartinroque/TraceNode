@@ -22,25 +22,28 @@ function Login() {
       return;
     }
 
-    if (data?.session) {
-      if (rememberMe) {
-        localStorage.setItem("access_token", data.session.access_token);
-        localStorage.setItem("refresh_token", data.session.refresh_token);
+    if (data?.session && data?.user) {
+      // Create one clean object for storage
+      const userInfo = {
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+        expires_at: data.session.expires_at,
+        expires_in: data.session.expires_in,
+        token_type: data.session.token_type,
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          role: data.user.role,
+          created_at: data.user.created_at,
+          last_sign_in_at: data.user.last_sign_in_at,
+        },
+      };
 
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            id: data.user.id,
-            email: data.user.email,
-            role: data.user.role,
-            created_at: data.user.created_at,
-          }),
-        );
+      // Save whether rememberMe is checked or not
+      // (If you only want rememberMe users saved, wrap this in if (rememberMe))
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
-        localStorage.setItem("session", JSON.stringify(data.session));
-      }
-
-      navigate("/dashboard");
+      navigate("/");
     }
   };
 
@@ -100,8 +103,7 @@ function Login() {
                   />
 
                   <span
-                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded outline-1 
-                    ${
+                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded outline-1 ${
                       rememberMe
                         ? "bg-blue-600 outline-blue-600"
                         : "bg-white outline-slate-300 dark:bg-neutral-700 dark:outline-neutral-600"
