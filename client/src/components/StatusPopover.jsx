@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 
-export default function StatusPopover({ 
-  isOpen, 
-  onClose, 
+export default function StatusPopover({
+  isOpen,
+  onClose,
   position,
-  onStatusChange, 
+  onStatusChange,
   currentStatus,
-  isUpdating 
+  isUpdating,
 }) {
   const popoverRef = useRef(null);
 
@@ -30,7 +30,11 @@ export default function StatusPopover({
 
   const statuses = [
     { label: "New", value: "New", bgColor: "bg-blue-100 hover:bg-blue-200" },
-    { label: "Done", value: "Done", bgColor: "bg-green-100 hover:bg-green-200" },
+    {
+      label: "Done",
+      value: "Done",
+      bgColor: "bg-green-100 hover:bg-green-200",
+    },
   ];
 
   return (

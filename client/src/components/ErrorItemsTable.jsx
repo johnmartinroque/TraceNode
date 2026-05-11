@@ -41,8 +41,8 @@ export default function ErrorItemsTable({ status, title }) {
     e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
     setPopoverPosition({
-      top: rect.top + window.scrollY,
-      left: rect.right + window.scrollX + 10,
+      top: rect.top,
+      left: rect.right + 10,
     });
     setSelectedItemId(itemId);
     setPopoverOpen(true);
@@ -62,12 +62,12 @@ export default function ErrorItemsTable({ status, title }) {
       setItems((prevItems) =>
         prevItems
           .map((item) =>
-            item.id === selectedItemId ? { ...item, status: newStatus } : item
+            item.id === selectedItemId ? { ...item, status: newStatus } : item,
           )
           .filter((item) => {
             // If new status doesn't match current filter, remove from list
             return item.status === status;
-          })
+          }),
       );
 
       setPopoverOpen(false);
@@ -119,11 +119,12 @@ export default function ErrorItemsTable({ status, title }) {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm my-5 overflow-hidden border border-gray-200">
+      <div className="bg-white rounded-lg shadow-sm my-5 border border-gray-200" style={{ borderRadius: "0.5rem", overflow: "hidden" }}>
         <h2 className="text-lg font-semibold text-gray-900 px-5 pt-5 pb-4 mb-0 border-b border-gray-200">
           {title} ({items.length})
         </h2>
-        <table className="w-full border-collapse text-sm">
+        <div style={{ overflow: "visible" }}>
+          <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
               <th className="px-5 py-3 text-center font-semibold text-gray-600 uppercase text-xs tracking-wide border-r border-gray-200">
@@ -159,7 +160,7 @@ export default function ErrorItemsTable({ status, title }) {
                   <td
                     onClick={(e) => handleStatusClick(e, item.id)}
                     className={`px-5 py-4 break-words text-center border-r border-gray-200 font-semibold text-white ${getStatusCellColor(
-                      item.status
+                      item.status,
                     )} cursor-pointer hover:opacity-80 transition-opacity`}
                   >
                     {item.status}
@@ -184,6 +185,7 @@ export default function ErrorItemsTable({ status, title }) {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       <StatusPopover
