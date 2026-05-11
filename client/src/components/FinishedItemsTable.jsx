@@ -67,26 +67,26 @@ export default function FinishedItemsTable() {
     );
 
   return (
-    <div className="bg-white rounded-lg shadow-sm my-5 overflow-hidden">
-      <h2 className="text-lg font-semibold text-gray-900 px-5 pt-5 pb-4 mb-0 border-b border-gray-300">
+    <div className="bg-white rounded-lg shadow-sm my-5 overflow-hidden border border-gray-200">
+      <h2 className="text-lg font-semibold text-gray-900 px-5 pt-5 pb-4 mb-0 border-b border-gray-200">
         Finished Items ({items.length})
       </h2>
       <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="bg-gray-50 border-b-2 border-gray-300">
-            <th className="px-5 py-3 text-left font-semibold text-gray-600 uppercase text-xs tracking-wide">
+          <tr className="bg-gray-50 border-b border-gray-200">
+            <th className="px-5 py-3 text-center font-semibold text-gray-600 uppercase text-xs tracking-wide border-r border-gray-200">
               Workflow Name
             </th>
-            <th className="px-5 py-3 text-left font-semibold text-gray-600 uppercase text-xs tracking-wide">
+            <th className="px-5 py-3 text-center font-semibold text-gray-600 uppercase text-xs tracking-wide border-r border-gray-200">
               Error Description
             </th>
-            <th className="px-5 py-3 text-left font-semibold text-gray-600 uppercase text-xs tracking-wide">
+            <th className="px-5 py-3 text-center font-semibold text-gray-600 uppercase text-xs tracking-wide border-r border-gray-200">
               Status
             </th>
-            <th className="px-5 py-3 text-left font-semibold text-gray-600 uppercase text-xs tracking-wide">
+            <th className="px-5 py-3 text-center font-semibold text-gray-600 uppercase text-xs tracking-wide border-r border-gray-200">
               Remarks
             </th>
-            <th className="px-5 py-3 text-left font-semibold text-gray-600 uppercase text-xs tracking-wide">
+            <th className="px-5 py-3 text-center font-semibold text-gray-600 uppercase text-xs tracking-wide">
               Date
             </th>
           </tr>
@@ -96,15 +96,15 @@ export default function FinishedItemsTable() {
             items.map((item) => (
               <tr
                 key={item.id}
-                className="border-b border-gray-100 transition-colors duration-200 hover:bg-gray-50 cursor-pointer"
+                className="border-b border-gray-200 transition-colors duration-200 hover:bg-gray-50 cursor-pointer"
               >
-                <td className="px-5 py-4 text-gray-900 break-words font-semibold text-gray-800 max-w-xs overflow-hidden text-ellipsis">
+                <td className="px-5 py-4 text-gray-900 break-words font-semibold text-gray-800 text-center border-r border-gray-200">
                   {item.workflow_name}
                 </td>
-                <td className="px-5 py-4 text-gray-900 break-words text-gray-600 max-w-sm overflow-hidden text-ellipsis whitespace-nowrap">
+                <td className="px-5 py-4 text-gray-900 break-words text-gray-600 text-center border-r border-gray-200">
                   {item.error_description}
                 </td>
-                <td className="px-5 py-4 text-gray-900 break-words text-center">
+                <td className="px-5 py-4 text-gray-900 break-words text-center border-r border-gray-200">
                   <span
                     className={`inline-block px-3 py-1.5 rounded-full font-semibold text-xs capitalize ${getStatusStyles(
                       item.status,
@@ -113,10 +113,10 @@ export default function FinishedItemsTable() {
                     {item.status}
                   </span>
                 </td>
-                <td className="px-5 py-4 text-gray-900 break-words text-gray-400 text-sm max-w-xs overflow-hidden text-ellipsis">
+                <td className="px-5 py-4 text-gray-900 break-words text-gray-400 text-sm text-center border-r border-gray-200">
                   {item.remarks || "-"}
                 </td>
-                <td className="px-5 py-4 text-gray-900 break-words text-gray-400 text-sm whitespace-nowrap">
+                <td className="px-5 py-4 text-gray-900 break-words text-gray-400 text-sm text-center">
                   {formatDate(item.created_at)}
                 </td>
               </tr>
