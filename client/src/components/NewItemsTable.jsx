@@ -105,13 +105,15 @@ export default function NewItemsTable() {
                 <td className="px-5 py-4 text-gray-900 break-words text-gray-600 text-center border-r border-gray-200">
                   {item.error_description}
                 </td>
-                <td className={`px-5 py-4 break-words text-center border-r border-gray-200 font-semibold text-white ${
-                  item.status === "New"
-                    ? "bg-blue-500"
-                    : item.status === "Done"
-                      ? "bg-green-500"
-                      : "bg-gray-400"
-                }`}>
+                <td
+                  className={`px-5 py-4 break-words text-center border-r border-gray-200 font-semibold text-white ${
+                    item.status === "New"
+                      ? "bg-blue-500"
+                      : item.status === "Done"
+                        ? "bg-green-500"
+                        : "bg-gray-400"
+                  }`}
+                >
                   {item.status}
                 </td>
                 <td className="px-5 py-4 text-gray-900 break-words text-gray-400 text-sm text-center border-r border-gray-200">
