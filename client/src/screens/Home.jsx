@@ -8,6 +8,7 @@ function Home() {
     new: [],
     finished: [],
   });
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (
@@ -28,6 +29,10 @@ function Home() {
     }
   }, [selectedItemIds]);
 
+  const handleStatusUpdated = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
   const handleSelectionChange = (table, itemId, checked) => {
     setSelectedItemIds((prev) => {
       const updatedIds = new Set(prev[table]);
@@ -47,8 +52,15 @@ function Home() {
 
   return (
     <div>
-      <NewItemsTable />
-      <FinishedItemsTable />
+      <NewItemsTable
+        refreshKey={refreshKey}
+        onStatusUpdated={handleStatusUpdated}
+      />
+
+      <FinishedItemsTable
+        refreshKey={refreshKey}
+        onStatusUpdated={handleStatusUpdated}
+      />
     </div>
   );
 }
