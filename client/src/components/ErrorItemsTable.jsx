@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import StatusPopover from "./StatusPopover";
+import RemarksEditor from "./RemarksEditor";
 
 export default function ErrorItemsTable({
   status,
@@ -16,6 +17,10 @@ export default function ErrorItemsTable({
   const [popoverPosition, setPopoverPosition] = useState(null);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [remarksEditorOpen, setRemarksEditorOpen] = useState(false);
+  const [remarksEditorPosition, setRemarksEditorPosition] = useState(null);
+  const [selectedRemarksItemId, setSelectedRemarksItemId] = useState(null);
+  const [isSavingRemarks, setIsSavingRemarks] = useState(false);
 
   useEffect(() => {
     fetchItems();
@@ -80,6 +85,47 @@ export default function ErrorItemsTable({
       setError(err.message);
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  const handleRemarksClick = (e, itemId, currentRemarks) => {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    setRemarksEditorPosition({
+      top: rect.top,
+      left: rect.right + 10,
+    });
+
+    setSelectedRemarksItemId(itemId);
+    setRemarksEditorOpen(true);
+  };
+
+  const handleRemarksChange = async (newRemarks) => {
+    try {
+      setIsSavingRemarks(true);
+
+      const { error: updateError } = await supabase
+        .from("errors")
+        .update({ remarks: newRemarks })
+        .eq("id", selectedRemarksItemId);
+
+      if (updateError) throw updateError;
+
+      // Update item in the table
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === selectedRemarksItemId
+            ? { ...item, remarks: newRemarks }
+            : item,
+        ),
+      );
+
+      setRemarksEditorOpen(false);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsSavingRemarks(false);
     }
   };
 
@@ -154,7 +200,12 @@ export default function ErrorItemsTable({
                     {item.status}
                   </td>
 
-                  <td className="px-5 py-4">{item.remarks || "-"}</td>
+                  <td
+                    onClick={(e) => handleRemarksClick(e, item.id, item.remarks)}
+                    className="px-5 py-4 cursor-pointer hover:bg-gray-100 transition-colors"
+                  >
+                    {item.remarks || "-"}
+                  </td>
                   <td className="px-5 py-4 text-center">
                     {formatDate(item.created_at)}
                   </td>
@@ -178,6 +229,17 @@ export default function ErrorItemsTable({
         onStatusChange={handleStatusChange}
         currentStatus={status}
         isUpdating={isUpdating}
+      />
+
+      <RemarksEditor
+        isOpen={remarksEditorOpen}
+        onClose={() => setRemarksEditorOpen(false)}
+        position={remarksEditorPosition}
+        onSave={handleRemarksChange}
+        currentRemarks={
+          items.find((item) => item.id === selectedRemarksItemId)?.remarks || ""
+        }
+        isSaving={isSavingRemarks}
       />
     </>
   );
