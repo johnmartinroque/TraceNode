@@ -201,7 +201,9 @@ export default function ErrorItemsTable({
                   </td>
 
                   <td
-                    onClick={(e) => handleRemarksClick(e, item.id, item.remarks)}
+                    onClick={(e) =>
+                      handleRemarksClick(e, item.id, item.remarks)
+                    }
                     className="px-5 py-4 cursor-pointer hover:bg-gray-100 transition-colors"
                   >
                     {item.remarks || "-"}
