@@ -50,6 +50,13 @@ function Home() {
     });
   };
 
+  const handleClearSelection = (table) => {
+    setSelectedItemIds((prev) => ({
+      ...prev,
+      [table]: [],
+    }));
+  };
+
   return (
     <div>
       <NewItemsTable
@@ -57,6 +64,7 @@ function Home() {
         onStatusUpdated={handleStatusUpdated}
         selectedIds={selectedItemIds.new}
         onSelectionChange={handleSelectionChange}
+        onClearSelection={handleClearSelection}
       />
 
       <FinishedItemsTable
@@ -64,6 +72,7 @@ function Home() {
         onStatusUpdated={handleStatusUpdated}
         selectedIds={selectedItemIds.finished}
         onSelectionChange={handleSelectionChange}
+        onClearSelection={handleClearSelection}
       />
     </div>
   );

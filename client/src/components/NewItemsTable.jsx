@@ -6,6 +6,7 @@ export default function NewItemsTable({
   onStatusUpdated,
   selectedIds,
   onSelectionChange,
+  onClearSelection,
 }) {
   return (
     <ErrorItemsTable
@@ -16,6 +17,7 @@ export default function NewItemsTable({
       onStatusUpdated={onStatusUpdated}
       selectedIds={selectedIds}
       onSelectionChange={onSelectionChange}
+      onClearSelection={onClearSelection}
     />
   );
 }

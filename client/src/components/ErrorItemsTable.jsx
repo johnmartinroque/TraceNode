@@ -12,6 +12,7 @@ export default function ErrorItemsTable({
   onStatusUpdated, // added
   selectedIds = [],
   onSelectionChange = () => {},
+  onClearSelection = () => {},
 }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -161,6 +162,7 @@ export default function ErrorItemsTable({
         onStatusUpdated();
       }
 
+      onClearSelection(table);
       setPopoverOpen(false);
     } catch (err) {
       setError(err.message);
@@ -205,6 +207,7 @@ export default function ErrorItemsTable({
         ),
       );
 
+      onClearSelection(table);
       setRemarksEditorOpen(false);
     } catch (err) {
       setError(err.message);
