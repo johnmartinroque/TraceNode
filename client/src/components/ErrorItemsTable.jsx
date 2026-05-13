@@ -286,9 +286,9 @@ export default function ErrorItemsTable({
               items.map((item) => (
                 <tr
                   key={item.id}
-                  className={`border-b border-gray-200 ${selectedIds.includes(
-                    item.id,
-                  ) ? "bg-blue-50" : ""}`}
+                  className={`border-b border-gray-200 ${
+                    selectedIds.includes(item.id) ? "bg-blue-50" : ""
+                  }`}
                 >
                   <td className="px-5 py-4 text-center">
                     <input
