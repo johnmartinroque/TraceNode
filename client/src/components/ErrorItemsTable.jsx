@@ -7,8 +7,11 @@ import RemarksEditor from "./RemarksEditor";
 export default function ErrorItemsTable({
   status,
   title,
+  table,
   refreshKey, // added
   onStatusUpdated, // added
+  selectedIds = [],
+  onSelectionChange = () => {},
 }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -138,20 +141,22 @@ export default function ErrorItemsTable({
   const handleStatusChange = async (newStatus) => {
     try {
       setIsUpdating(true);
+      const idsToUpdate =
+        selectedIds?.length > 0 && selectedIds.includes(selectedItemId)
+          ? selectedIds
+          : [selectedItemId];
 
       const { error: updateError } = await supabase
         .from("errors")
         .update({ status: newStatus })
-        .eq("id", selectedItemId);
+        .in("id", idsToUpdate);
 
       if (updateError) throw updateError;
 
-      // Remove from current table immediately
       setItems((prevItems) =>
-        prevItems.filter((item) => item.id !== selectedItemId),
+        prevItems.filter((item) => !idsToUpdate.includes(item.id)),
       );
 
-      // Notify parent so other tables refresh
       if (onStatusUpdated) {
         onStatusUpdated();
       }
@@ -180,18 +185,21 @@ export default function ErrorItemsTable({
   const handleRemarksChange = async (newRemarks) => {
     try {
       setIsSavingRemarks(true);
+      const idsToUpdate =
+        selectedIds?.length > 0 && selectedIds.includes(selectedRemarksItemId)
+          ? selectedIds
+          : [selectedRemarksItemId];
 
       const { error: updateError } = await supabase
         .from("errors")
         .update({ remarks: newRemarks })
-        .eq("id", selectedRemarksItemId);
+        .in("id", idsToUpdate);
 
       if (updateError) throw updateError;
 
-      // Update item in the table
       setItems((prevItems) =>
         prevItems.map((item) =>
-          item.id === selectedRemarksItemId
+          idsToUpdate.includes(item.id)
             ? { ...item, remarks: newRemarks }
             : item,
         ),
@@ -252,6 +260,19 @@ export default function ErrorItemsTable({
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-5 py-3 text-center">
+                <input
+                  type="checkbox"
+                  checked={
+                    items.length > 0 && selectedIds.length === items.length
+                  }
+                  onChange={(event) =>
+                    items.forEach((item) =>
+                      onSelectionChange(table, item.id, event.target.checked),
+                    )
+                  }
+                />
+              </th>
               <th className="px-5 py-3 text-center">Workflow Name</th>
               <th className="px-5 py-3 text-center">Error Description</th>
               <th className="px-5 py-3 text-center">Status</th>
@@ -263,7 +284,21 @@ export default function ErrorItemsTable({
           <tbody>
             {items.length > 0 ? (
               items.map((item) => (
-                <tr key={item.id} className="border-b border-gray-200">
+                <tr
+                  key={item.id}
+                  className={`border-b border-gray-200 ${selectedIds.includes(
+                    item.id,
+                  ) ? "bg-blue-50" : ""}`}
+                >
+                  <td className="px-5 py-4 text-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(item.id)}
+                      onChange={(event) =>
+                        onSelectionChange(table, item.id, event.target.checked)
+                      }
+                    />
+                  </td>
                   <td className="px-5 py-4">{item.workflow_name}</td>
                   <td className="px-5 py-4">{item.error_description}</td>
 

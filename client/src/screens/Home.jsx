@@ -55,11 +55,15 @@ function Home() {
       <NewItemsTable
         refreshKey={refreshKey}
         onStatusUpdated={handleStatusUpdated}
+        selectedIds={selectedItemIds.new}
+        onSelectionChange={handleSelectionChange}
       />
 
       <FinishedItemsTable
         refreshKey={refreshKey}
         onStatusUpdated={handleStatusUpdated}
+        selectedIds={selectedItemIds.finished}
+        onSelectionChange={handleSelectionChange}
       />
     </div>
   );
