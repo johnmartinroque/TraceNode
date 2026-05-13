@@ -26,6 +26,82 @@ export default function ErrorItemsTable({
     fetchItems();
   }, [status, refreshKey]); // refresh when parent triggers update
 
+  useEffect(() => {
+    // Unique channel per status
+    const channel = supabase.channel(`errors-realtime-${status}`);
+
+    channel
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "errors",
+        },
+        (payload) => {
+          const inserted = payload.new;
+          if (inserted?.status === status) {
+            setItems((prevItems) => [inserted, ...prevItems]);
+          }
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "errors",
+        },
+        (payload) => {
+          const updated = payload.new;
+          const previous = payload.old;
+          if (!updated) return;
+
+          if (updated.status === status) {
+            setItems((prevItems) => {
+              const alreadyInList = prevItems.some(
+                (item) => item.id === updated.id,
+              );
+
+              if (alreadyInList) {
+                return prevItems.map((item) =>
+                  item.id === updated.id ? { ...item, ...updated } : item,
+                );
+              }
+
+              return [updated, ...prevItems];
+            });
+          } else if (previous?.status === status) {
+            setItems((prevItems) =>
+              prevItems.filter((item) => item.id !== updated.id),
+            );
+          }
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "errors",
+        },
+        (payload) => {
+          const deleted = payload.old;
+          if (deleted?.status === status) {
+            setItems((prevItems) =>
+              prevItems.filter((item) => item.id !== deleted.id),
+            );
+          }
+        },
+      );
+
+    channel.subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [status]);
+
   const fetchItems = async () => {
     try {
       setLoading(true);
