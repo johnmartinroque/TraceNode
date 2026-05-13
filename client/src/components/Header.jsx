@@ -15,12 +15,16 @@ function Header() {
         data: { user },
       } = await supabase.auth.getUser();
 
-      if (user) {
-        setUser(user);
-      }
+      setUser(user || null);
     };
 
     getUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user || null);
+      },
+    );
 
     // Close dropdown when clicking outside
     const handleClickOutside = (event) => {
@@ -33,11 +37,15 @@ function Header() {
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      authListener?.subscription?.unsubscribe();
     };
   }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+
+    setUser(null);
+    setDropdownOpen(false);
 
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
