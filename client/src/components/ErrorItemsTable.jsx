@@ -8,8 +8,8 @@ export default function ErrorItemsTable({
   status,
   title,
   table,
-  refreshKey, // added
-  onStatusUpdated, // added
+  refreshKey,
+  onStatusUpdated,
   selectedIds = [],
   onSelectionChange = () => {},
   onClearSelection = () => {},
@@ -17,21 +17,27 @@ export default function ErrorItemsTable({
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState(null);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+
   const [remarksEditorOpen, setRemarksEditorOpen] = useState(false);
   const [remarksEditorPosition, setRemarksEditorPosition] = useState(null);
   const [selectedRemarksItemId, setSelectedRemarksItemId] = useState(null);
   const [isSavingRemarks, setIsSavingRemarks] = useState(false);
 
-  useEffect(() => {
-    fetchItems();
-  }, [status, refreshKey]); // refresh when parent triggers update
+  // RIGHT CLICK DELETE MENU
+  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    // Unique channel per status
+    fetchItems();
+  }, [status, refreshKey]);
+
+  useEffect(() => {
     const channel = supabase.channel(`errors-realtime-${status}`);
 
     channel
@@ -106,6 +112,14 @@ export default function ErrorItemsTable({
     };
   }, [status]);
 
+  // CLOSE CONTEXT MENU ON CLICK
+  useEffect(() => {
+    const closeMenu = () => setContextMenuOpen(false);
+    window.addEventListener("click", closeMenu);
+
+    return () => window.removeEventListener("click", closeMenu);
+  }, []);
+
   const fetchItems = async () => {
     try {
       setLoading(true);
@@ -142,6 +156,7 @@ export default function ErrorItemsTable({
   const handleStatusChange = async (newStatus) => {
     try {
       setIsUpdating(true);
+
       const idsToUpdate =
         selectedIds?.length > 0 && selectedIds.includes(selectedItemId)
           ? selectedIds
@@ -158,10 +173,7 @@ export default function ErrorItemsTable({
         prevItems.filter((item) => !idsToUpdate.includes(item.id)),
       );
 
-      if (onStatusUpdated) {
-        onStatusUpdated();
-      }
-
+      onStatusUpdated?.();
       onClearSelection(table);
       setPopoverOpen(false);
     } catch (err) {
@@ -171,7 +183,57 @@ export default function ErrorItemsTable({
     }
   };
 
-  const handleRemarksClick = (e, itemId, currentRemarks) => {
+  // RIGHT CLICK MENU
+  const handleRightClick = (e, itemId) => {
+    e.preventDefault();
+
+    // Auto select row if not already selected
+    if (!selectedIds.includes(itemId)) {
+      onClearSelection(table);
+      onSelectionChange(table, itemId, true);
+    }
+
+    setSelectedItemId(itemId);
+    setContextMenuPosition({
+      top: e.pageY,
+      left: e.pageX,
+    });
+
+    setContextMenuOpen(true);
+  };
+
+  // DELETE SINGLE OR MULTIPLE
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+
+      const idsToDelete =
+        selectedIds?.length > 0 && selectedIds.includes(selectedItemId)
+          ? selectedIds
+          : [selectedItemId];
+
+      const { error: deleteError } = await supabase
+        .from("errors")
+        .delete()
+        .in("id", idsToDelete);
+
+      if (deleteError) throw deleteError;
+
+      setItems((prevItems) =>
+        prevItems.filter((item) => !idsToDelete.includes(item.id)),
+      );
+
+      onClearSelection(table);
+      onStatusUpdated?.();
+      setContextMenuOpen(false);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleRemarksClick = (e, itemId) => {
     e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
 
@@ -187,6 +249,7 @@ export default function ErrorItemsTable({
   const handleRemarksChange = async (newRemarks) => {
     try {
       setIsSavingRemarks(true);
+
       const idsToUpdate =
         selectedIds?.length > 0 && selectedIds.includes(selectedRemarksItemId)
           ? selectedIds
@@ -289,7 +352,8 @@ export default function ErrorItemsTable({
               items.map((item) => (
                 <tr
                   key={item.id}
-                  className={`border-b border-gray-200 ${
+                  onContextMenu={(e) => handleRightClick(e, item.id)}
+                  className={`border-b border-gray-200 cursor-context-menu ${
                     selectedIds.includes(item.id) ? "bg-blue-50" : ""
                   }`}
                 >
@@ -302,6 +366,7 @@ export default function ErrorItemsTable({
                       }
                     />
                   </td>
+
                   <td className="px-5 py-4">{item.workflow_name}</td>
                   <td className="px-5 py-4">{item.error_description}</td>
 
@@ -315,13 +380,12 @@ export default function ErrorItemsTable({
                   </td>
 
                   <td
-                    onClick={(e) =>
-                      handleRemarksClick(e, item.id, item.remarks)
-                    }
-                    className="px-5 py-4 cursor-pointer hover:bg-gray-100 transition-colors"
+                    onClick={(e) => handleRemarksClick(e, item.id)}
+                    className="px-5 py-4 cursor-pointer hover:bg-gray-100"
                   >
                     {item.remarks || "-"}
                   </td>
+
                   <td className="px-5 py-4 text-center">
                     {formatDate(item.created_at)}
                   </td>
@@ -329,7 +393,7 @@ export default function ErrorItemsTable({
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="px-5 py-10 text-center">
+                <td colSpan="6" className="px-5 py-10 text-center">
                   No {status.toLowerCase()} items
                 </td>
               </tr>
@@ -337,6 +401,31 @@ export default function ErrorItemsTable({
           </tbody>
         </table>
       </div>
+
+      {/* RIGHT CLICK DELETE MENU */}
+      {contextMenuOpen && (
+        <div
+          className="fixed bg-white border border-gray-300 rounded shadow-lg z-50"
+          style={{
+            top: contextMenuPosition?.top,
+            left: contextMenuPosition?.left,
+          }}
+        >
+          <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="px-4 py-2 text-red-600 hover:bg-red-50 w-full text-left"
+          >
+            {isDeleting
+              ? "Deleting..."
+              : `Delete ${
+                  selectedIds.length > 1
+                    ? `${selectedIds.length} Items`
+                    : "Item"
+                }`}
+          </button>
+        </div>
+      )}
 
       <StatusPopover
         isOpen={popoverOpen}
