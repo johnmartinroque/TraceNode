@@ -318,107 +318,121 @@ export default function ErrorItemsTable({
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm my-5 border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm my-5 border border-gray-200">
         <h2 className="text-lg font-semibold text-gray-900 px-5 pt-5 pb-4 border-b border-gray-200">
           {title} ({items.length})
         </h2>
 
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="px-5 py-3 text-center">
-                <input
-                  type="checkbox"
-                  checked={
-                    items.length > 0 && selectedIds.length === items.length
-                  }
-                  onChange={(event) =>
-                    items.forEach((item) =>
-                      onSelectionChange(table, item.id, event.target.checked),
-                    )
-                  }
-                />
-              </th>
-              <th className="px-5 py-3 text-center">Workflow Name</th>
-              <th className="px-5 py-3 text-center">Workflow Link</th>
-              <th className="px-5 py-3 text-center">Error Description</th>
-              <th className="px-5 py-3 text-center">Status</th>
-              <th className="px-5 py-3 text-center">Remarks</th>
-              <th className="px-5 py-3 text-center">Date</th>
-            </tr>
-          </thead>
+        <div>
+          <table className="min-w-[1100px] w-full table-fixed border-collapse text-sm">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="w-[48px] px-5 py-3 text-center">
+                  <input
+                    type="checkbox"
+                    checked={
+                      items.length > 0 && selectedIds.length === items.length
+                    }
+                    onChange={(event) =>
+                      items.forEach((item) =>
+                        onSelectionChange(table, item.id, event.target.checked),
+                      )
+                    }
+                  />
+                </th>
+                <th className="w-[180px] px-5 py-3 text-center">
+                  Workflow Name
+                </th>
+                <th className="w-[170px] px-5 py-3 text-center">
+                  Workflow Link
+                </th>
+                <th className="w-[260px] px-5 py-3 text-center">
+                  Error Description
+                </th>
+                <th className="w-[100px] px-5 py-3 text-center">Status</th>
+                <th className="w-[190px] px-5 py-3 text-center">Remarks</th>
+                <th className="w-[160px] px-5 py-3 text-center">Date</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {items.length > 0 ? (
-              items.map((item) => (
-                <tr
-                  key={item.id}
-                  onContextMenu={(e) => handleRightClick(e, item.id)}
-                  className={`border-b border-gray-200 cursor-context-menu ${
-                    selectedIds.includes(item.id) ? "bg-blue-50" : ""
-                  }`}
-                >
-                  <td className="px-5 py-4 text-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(item.id)}
-                      onChange={(event) =>
-                        onSelectionChange(table, item.id, event.target.checked)
-                      }
-                    />
-                  </td>
-
-                  <td className="px-5 py-4">{item.workflow_name}</td>
-                  <td className="px-5 py-4 text-center">
-                    {item.workflow_link ? (
-                      <a
-                        href={item.workflow_link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-blue-600 hover:underline"
-                      >
-                        Open Workflow
-                      </a>
-                    ) : item.workflow_id ? (
-                      item.workflow_id
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  <td className="px-5 py-4">{item.error_description}</td>
-
-                  <td
-                    onClick={(e) => handleStatusClick(e, item.id)}
-                    className={`px-5 py-4 text-center text-white cursor-pointer ${getStatusCellColor(
-                      item.status,
-                    )}`}
+            <tbody>
+              {items.length > 0 ? (
+                items.map((item) => (
+                  <tr
+                    key={item.id}
+                    onContextMenu={(e) => handleRightClick(e, item.id)}
+                    className={`border-b border-gray-200 cursor-context-menu ${
+                      selectedIds.includes(item.id) ? "bg-blue-50" : ""
+                    }`}
                   >
-                    {item.status}
-                  </td>
+                    <td className="px-5 py-4 text-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(item.id)}
+                        onChange={(event) =>
+                          onSelectionChange(
+                            table,
+                            item.id,
+                            event.target.checked,
+                          )
+                        }
+                      />
+                    </td>
 
-                  <td
-                    onClick={(e) => handleRemarksClick(e, item.id)}
-                    className="px-5 py-4 cursor-pointer hover:bg-gray-100"
-                  >
-                    {item.remarks || "-"}
-                  </td>
+                    <td className="px-5 py-4">{item.workflow_name}</td>
 
-                  <td className="px-5 py-4 text-center">
-                    {formatDate(item.created_at)}
+                    <td className="px-5 py-4 text-center">
+                      {item.workflow_link ? (
+                        <a
+                          href={item.workflow_link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          Open Workflow
+                        </a>
+                      ) : item.workflow_id ? (
+                        item.workflow_id
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    <td className="px-5 py-4">{item.error_description}</td>
+
+                    <td
+                      onClick={(e) => handleStatusClick(e, item.id)}
+                      className={`px-5 py-4 text-center text-white cursor-pointer ${getStatusCellColor(
+                        item.status,
+                      )}`}
+                    >
+                      {item.status}
+                    </td>
+
+                    <td
+                      onClick={(e) => handleRemarksClick(e, item.id)}
+                      className="px-5 py-4 cursor-pointer hover:bg-gray-100"
+                    >
+                      {item.remarks || "-"}
+                    </td>
+
+                    <td className="px-5 py-4 text-center">
+                      {formatDate(item.created_at)}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="px-5 py-10 text-center">
+                    No {status.toLowerCase()} items
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="px-5 py-10 text-center">
-                  No {status.toLowerCase()} items
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>{" "}
+      {/* THIS DIV WAS MISSING */}
       {/* RIGHT CLICK DELETE MENU */}
       {contextMenuOpen && (
         <div
@@ -443,7 +457,6 @@ export default function ErrorItemsTable({
           </button>
         </div>
       )}
-
       <StatusPopover
         isOpen={popoverOpen}
         onClose={() => setPopoverOpen(false)}
@@ -452,7 +465,6 @@ export default function ErrorItemsTable({
         currentStatus={status}
         isUpdating={isUpdating}
       />
-
       <RemarksEditor
         isOpen={remarksEditorOpen}
         onClose={() => setRemarksEditorOpen(false)}
