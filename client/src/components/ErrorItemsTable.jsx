@@ -340,6 +340,7 @@ export default function ErrorItemsTable({
                 />
               </th>
               <th className="px-5 py-3 text-center">Workflow Name</th>
+              <th className="px-5 py-3 text-center">Workflow Link</th>
               <th className="px-5 py-3 text-center">Error Description</th>
               <th className="px-5 py-3 text-center">Status</th>
               <th className="px-5 py-3 text-center">Remarks</th>
@@ -368,6 +369,22 @@ export default function ErrorItemsTable({
                   </td>
 
                   <td className="px-5 py-4">{item.workflow_name}</td>
+                  <td className="px-5 py-4 text-center">
+                    {item.workflow_link ? (
+                      <a
+                        href={item.workflow_link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        Open Workflow
+                      </a>
+                    ) : item.workflow_id ? (
+                      item.workflow_id
+                    ) : (
+                      "-"
+                    )}
+                  </td>
                   <td className="px-5 py-4">{item.error_description}</td>
 
                   <td
@@ -393,7 +410,7 @@ export default function ErrorItemsTable({
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="px-5 py-10 text-center">
+                <td colSpan="7" className="px-5 py-10 text-center">
                   No {status.toLowerCase()} items
                 </td>
               </tr>
