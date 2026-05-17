@@ -11,17 +11,32 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const { error } = await supabase.auth.signUp({
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
     if (error) {
       alert(error.message);
-    } else {
-      alert("Check your email for verification!");
-      navigate("/login");
+      return;
     }
+
+    const user = signUpData?.user;
+    if (user?.id && user.email) {
+      const { error: insertError } = await supabase.from("users").insert({
+        uid: user.id,
+        email: user.email,
+      });
+
+      if (insertError) {
+        console.error("Failed to insert user record:", insertError);
+        alert("Registration succeeded, but saving user details failed.");
+        return;
+      }
+    }
+
+    alert("Check your email for verification!");
+    navigate("/login");
   };
 
   return (
