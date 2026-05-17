@@ -6,6 +6,7 @@ import LandingPage from "./screens/LandingPage";
 import Login from "./screens/Login";
 import Register from "./screens/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Users from "./screens/Users";
 
 function HomeScreen() {
   const userInfo = localStorage.getItem("userInfo");
@@ -34,6 +35,7 @@ function App() {
           <Route path="/" element={<HomeScreen />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/users" element={<Users />} />
         </Routes>
       </Router>
     </div>
