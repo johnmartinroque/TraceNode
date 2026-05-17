@@ -153,6 +153,19 @@ export default function ErrorItemsTable({
     setPopoverOpen(true);
   };
 
+  const getTimestamp = () => {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(now.getUTCDate()).padStart(2, "0");
+    const hours = String(now.getUTCHours()).padStart(2, "0");
+    const minutes = String(now.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(now.getUTCSeconds()).padStart(2, "0");
+    const milliseconds = String(now.getUTCMilliseconds()).padStart(3, "0");
+    const microseconds = milliseconds + "000";
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${microseconds}+00`;
+  };
+
   const handleStatusChange = async (newStatus) => {
     try {
       setIsUpdating(true);
@@ -164,7 +177,7 @@ export default function ErrorItemsTable({
 
       const { error: updateError } = await supabase
         .from("errors")
-        .update({ status: newStatus })
+        .update({ status: newStatus, last_modified: getTimestamp() })
         .in("id", idsToUpdate);
 
       if (updateError) throw updateError;
@@ -257,7 +270,7 @@ export default function ErrorItemsTable({
 
       const { error: updateError } = await supabase
         .from("errors")
-        .update({ remarks: newRemarks })
+        .update({ remarks: newRemarks, last_modified: getTimestamp() })
         .in("id", idsToUpdate);
 
       if (updateError) throw updateError;
