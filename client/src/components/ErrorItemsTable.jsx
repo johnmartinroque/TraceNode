@@ -356,9 +356,7 @@ export default function ErrorItemsTable({
                 <th className="w-[180px] px-5 py-3 text-center">
                   Workflow Name
                 </th>
-                <th className="w-[140px] px-5 py-3 text-center">
-                  User
-                </th>
+                <th className="w-[140px] px-5 py-3 text-center">User</th>
                 <th className="w-[170px] px-5 py-3 text-center">
                   Workflow Link
                 </th>
