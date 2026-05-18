@@ -356,6 +356,9 @@ export default function ErrorItemsTable({
                 <th className="w-[180px] px-5 py-3 text-center">
                   Workflow Name
                 </th>
+                <th className="w-[140px] px-5 py-3 text-center">
+                  User
+                </th>
                 <th className="w-[170px] px-5 py-3 text-center">
                   Workflow Link
                 </th>
@@ -393,6 +396,10 @@ export default function ErrorItemsTable({
                     </td>
 
                     <td className="px-5 py-4">{item.workflow_name}</td>
+
+                    <td className="px-5 py-4 text-center">
+                      {item.user || item.user_name || item.user_email || "-"}
+                    </td>
 
                     <td className="px-5 py-4 text-center">
                       {item.workflow_link ? (
