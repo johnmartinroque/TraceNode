@@ -141,51 +141,6 @@ function Header() {
                   Home
                 </Link>
               </li>
-
-              <li>
-                <Link
-                  to="/company"
-                  className="block py-2 pr-4 pl-3 text-gray-700 hover:text-blue-700 lg:p-0 dark:text-gray-400 dark:hover:text-white"
-                >
-                  Company
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  to="/marketplace"
-                  className="block py-2 pr-4 pl-3 text-gray-700 hover:text-blue-700 lg:p-0 dark:text-gray-400 dark:hover:text-white"
-                >
-                  Marketplace
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  to="/features"
-                  className="block py-2 pr-4 pl-3 text-gray-700 hover:text-blue-700 lg:p-0 dark:text-gray-400 dark:hover:text-white"
-                >
-                  Features
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  to="/team"
-                  className="block py-2 pr-4 pl-3 text-gray-700 hover:text-blue-700 lg:p-0 dark:text-gray-400 dark:hover:text-white"
-                >
-                  Team
-                </Link>
-              </li>
-
-              <li>
-                <Link
-                  to="/contact"
-                  className="block py-2 pr-4 pl-3 text-gray-700 hover:text-blue-700 lg:p-0 dark:text-gray-400 dark:hover:text-white"
-                >
-                  Contact
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
