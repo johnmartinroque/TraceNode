@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 function Header() {
@@ -134,12 +134,33 @@ function Header() {
           <div className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">
             <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
               <li>
-                <Link
+                <NavLink
                   to="/"
-                  className="block py-2 pr-4 pl-3 text-blue-700 lg:p-0 dark:text-white"
+                  className={({ isActive }) =>
+                    `block py-2 pr-4 pl-3 lg:p-0 ${
+                      isActive
+                        ? "text-white bg-blue-700 lg:bg-transparent lg:text-white"
+                        : "text-gray-700 hover:text-blue-700 dark:text-gray-400 dark:hover:text-white"
+                    }`
+                  }
                 >
                   Home
-                </Link>
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/users"
+                  className={({ isActive }) =>
+                    `block py-2 pr-4 pl-3 lg:p-0 ${
+                      isActive
+                        ? "text-white bg-blue-700 lg:bg-transparent lg:text-white"
+                        : "text-gray-700 hover:text-blue-700 dark:text-gray-400 dark:hover:text-white"
+                    }`
+                  }
+                >
+                  Users
+                </NavLink>
               </li>
             </ul>
           </div>
