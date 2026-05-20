@@ -11,16 +11,19 @@ export default function DeleteItemModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="w-full max-w-md rounded-xl bg-white shadow-2xl ring-1 ring-black/5">
         <div className="px-6 py-5 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Confirm delete</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Confirm delete
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Are you sure you want to delete {itemCount} {itemCount === 1 ? "item" : "items"}?
-            This action cannot be undone.
+            Are you sure you want to delete {itemCount}{" "}
+            {itemCount === 1 ? "item" : "items"}? This action cannot be undone.
           </p>
         </div>
 
         <div className="px-6 py-4 flex flex-col gap-3">
           <div className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-            Once confirmed, the selected error item(s) will be removed permanently.
+            Once confirmed, the selected error item(s) will be removed
+            permanently.
           </div>
           <div className="flex justify-end gap-2">
             <button
@@ -37,7 +40,11 @@ export default function DeleteItemModal({
               disabled={isDeleting}
               className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isDeleting ? "Deleting..." : itemCount > 1 ? `Delete ${itemCount} items` : "Delete item"}
+              {isDeleting
+                ? "Deleting..."
+                : itemCount > 1
+                  ? `Delete ${itemCount} items`
+                  : "Delete item"}
             </button>
           </div>
         </div>

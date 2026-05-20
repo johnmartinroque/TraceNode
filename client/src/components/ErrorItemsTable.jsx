@@ -238,8 +238,8 @@ export default function ErrorItemsTable({
         pendingDeleteIds?.length > 0
           ? pendingDeleteIds
           : selectedIds?.length > 0 && selectedIds.includes(selectedItemId)
-          ? selectedIds
-          : [selectedItemId];
+            ? selectedIds
+            : [selectedItemId];
 
       const { error: deleteError } = await supabase
         .from("errors")
