@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import StatusPopover from "./StatusPopover";
 import RemarksEditor from "./RemarksEditor";
+import DeleteItemModal from "./DeleteItemModal";
 
 export default function ErrorItemsTable({
   status,
@@ -32,6 +33,8 @@ export default function ErrorItemsTable({
   const [contextMenuOpen, setContextMenuOpen] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [pendingDeleteIds, setPendingDeleteIds] = useState([]);
 
   useEffect(() => {
     fetchItems();
@@ -215,13 +218,26 @@ export default function ErrorItemsTable({
     setContextMenuOpen(true);
   };
 
+  const handleDeleteClick = () => {
+    const idsToDelete =
+      selectedIds?.length > 0 && selectedIds.includes(selectedItemId)
+        ? selectedIds
+        : [selectedItemId];
+
+    setPendingDeleteIds(idsToDelete);
+    setDeleteModalOpen(true);
+    setContextMenuOpen(false);
+  };
+
   // DELETE SINGLE OR MULTIPLE
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
 
       const idsToDelete =
-        selectedIds?.length > 0 && selectedIds.includes(selectedItemId)
+        pendingDeleteIds?.length > 0
+          ? pendingDeleteIds
+          : selectedIds?.length > 0 && selectedIds.includes(selectedItemId)
           ? selectedIds
           : [selectedItemId];
 
@@ -238,7 +254,8 @@ export default function ErrorItemsTable({
 
       onClearSelection(table);
       onStatusUpdated?.();
-      setContextMenuOpen(false);
+      setDeleteModalOpen(false);
+      setPendingDeleteIds([]);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -461,7 +478,7 @@ export default function ErrorItemsTable({
           }}
         >
           <button
-            onClick={handleDelete}
+            onClick={handleDeleteClick}
             disabled={isDeleting}
             className="px-4 py-2 text-red-600 hover:bg-red-50 w-full text-left"
           >
@@ -475,6 +492,13 @@ export default function ErrorItemsTable({
           </button>
         </div>
       )}
+      <DeleteItemModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        itemCount={pendingDeleteIds.length || 1}
+        isDeleting={isDeleting}
+      />
       <StatusPopover
         isOpen={popoverOpen}
         onClose={() => setPopoverOpen(false)}
