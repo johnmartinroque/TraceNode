@@ -354,10 +354,10 @@ export default function ErrorItemsTable({
         </h2>
 
         <div>
-          <table className="min-w-[1100px] w-full table-fixed border-collapse text-sm">
+          <table className="min-w-[1100px] w-full border-collapse text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="w-[48px] px-5 py-3 text-center">
+              <tr className="bg-gray-50">
+                <th className="w-[48px] px-5 py-3 text-center border border-gray-300">
                   <input
                     type="checkbox"
                     checked={
@@ -370,19 +370,34 @@ export default function ErrorItemsTable({
                     }
                   />
                 </th>
-                <th className="w-[180px] px-5 py-3 text-center">
+
+                <th className="w-[180px] px-5 py-3 text-center border border-gray-300">
                   Workflow Name
                 </th>
-                <th className="w-[140px] px-5 py-3 text-center">User</th>
-                <th className="w-[170px] px-5 py-3 text-center">
+
+                <th className="w-[140px] px-5 py-3 text-center border border-gray-300">
+                  User
+                </th>
+
+                <th className="w-[170px] px-5 py-3 text-center border border-gray-300">
                   Workflow Link
                 </th>
-                <th className="w-[260px] px-5 py-3 text-center">
+
+                <th className="w-[260px] px-5 py-3 text-center border border-gray-300">
                   Error Description
                 </th>
-                <th className="w-[100px] px-5 py-3 text-center">Status</th>
-                <th className="w-[190px] px-5 py-3 text-center">Remarks</th>
-                <th className="w-[160px] px-5 py-3 text-center">Date</th>
+
+                <th className="w-[100px] px-5 py-3 text-center border border-gray-300">
+                  Status
+                </th>
+
+                <th className="w-[190px] px-5 py-3 text-center border border-gray-300">
+                  Remarks
+                </th>
+
+                <th className="w-[160px] px-5 py-3 text-center border border-gray-300">
+                  Date
+                </th>
               </tr>
             </thead>
 
@@ -392,11 +407,11 @@ export default function ErrorItemsTable({
                   <tr
                     key={item.id}
                     onContextMenu={(e) => handleRightClick(e, item.id)}
-                    className={`border-b border-gray-200 cursor-context-menu ${
+                    className={`cursor-context-menu ${
                       selectedIds.includes(item.id) ? "bg-blue-50" : ""
                     }`}
                   >
-                    <td className="px-5 py-4 text-center">
+                    <td className="px-5 py-4 text-center border border-gray-300">
                       <input
                         type="checkbox"
                         checked={selectedIds.includes(item.id)}
@@ -410,13 +425,15 @@ export default function ErrorItemsTable({
                       />
                     </td>
 
-                    <td className="px-5 py-4">{item.workflow_name}</td>
+                    <td className="px-5 py-4 border border-gray-300">
+                      {item.workflow_name}
+                    </td>
 
-                    <td className="px-5 py-4 text-center">
+                    <td className="px-5 py-4 text-center border border-gray-300">
                       {item.user || item.user_name || item.user_email || "-"}
                     </td>
 
-                    <td className="px-5 py-4 text-center">
+                    <td className="px-5 py-4 text-center border border-gray-300">
                       {item.workflow_link ? (
                         <a
                           href={item.workflow_link}
@@ -433,11 +450,13 @@ export default function ErrorItemsTable({
                       )}
                     </td>
 
-                    <td className="px-5 py-4">{item.error_description}</td>
+                    <td className="px-5 py-4 border border-gray-300">
+                      {item.error_description}
+                    </td>
 
                     <td
                       onClick={(e) => handleStatusClick(e, item.id)}
-                      className={`px-5 py-4 text-center text-white cursor-pointer ${getStatusCellColor(
+                      className={`px-5 py-4 text-center text-white cursor-pointer border border-gray-300 ${getStatusCellColor(
                         item.status,
                       )}`}
                     >
@@ -446,19 +465,22 @@ export default function ErrorItemsTable({
 
                     <td
                       onClick={(e) => handleRemarksClick(e, item.id)}
-                      className="px-5 py-4 cursor-pointer hover:bg-gray-100"
+                      className="px-5 py-4 cursor-pointer hover:bg-gray-100 border border-gray-300"
                     >
                       {item.remarks || "-"}
                     </td>
 
-                    <td className="px-5 py-4 text-center">
+                    <td className="px-5 py-4 text-center border border-gray-300">
                       {formatDate(item.created_at)}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="px-5 py-10 text-center">
+                  <td
+                    colSpan="8"
+                    className="px-5 py-10 text-center border border-gray-300"
+                  >
                     No {status.toLowerCase()} items
                   </td>
                 </tr>
