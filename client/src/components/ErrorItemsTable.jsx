@@ -54,7 +54,7 @@ export default function ErrorItemsTable({
         (payload) => {
           const inserted = payload.new;
           if (inserted?.status === status) {
-            setItems((prevItems) => [inserted, ...prevItems]);
+            setItems((prevItems) => [...prevItems, inserted]);
           }
         },
       )
@@ -82,7 +82,7 @@ export default function ErrorItemsTable({
                 );
               }
 
-              return [updated, ...prevItems];
+              return [...prevItems, updated];
             });
           } else if (previous?.status === status) {
             setItems((prevItems) =>
@@ -131,7 +131,7 @@ export default function ErrorItemsTable({
         .from("errors")
         .select("*")
         .eq("status", status)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: true });
 
       if (fetchError) throw fetchError;
 
