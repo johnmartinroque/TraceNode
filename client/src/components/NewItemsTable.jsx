@@ -7,6 +7,7 @@ export default function NewItemsTable({
   selectedIds,
   onSelectionChange,
   onClearSelection,
+  searchTerm,
 }) {
   return (
     <ErrorItemsTable
@@ -18,6 +19,7 @@ export default function NewItemsTable({
       selectedIds={selectedIds}
       onSelectionChange={onSelectionChange}
       onClearSelection={onClearSelection}
+      searchTerm={searchTerm}
     />
   );
 }

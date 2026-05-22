@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NewItemsTable from "../components/NewItemsTable";
 import FinishedItemsTable from "../components/FinishedItemsTable";
+import SearchItem from "../components/SearchItem";
 
 function Home() {
   const [selectedTable, setSelectedTable] = useState(null);
@@ -8,6 +9,7 @@ function Home() {
     new: [],
     finished: [],
   });
+  const [searchTerm, setSearchTerm] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -59,12 +61,14 @@ function Home() {
 
   return (
     <div>
+      <SearchItem searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       <NewItemsTable
         refreshKey={refreshKey}
         onStatusUpdated={handleStatusUpdated}
         selectedIds={selectedItemIds.new}
         onSelectionChange={handleSelectionChange}
         onClearSelection={handleClearSelection}
+        searchTerm={searchTerm}
       />
 
       <FinishedItemsTable
@@ -73,6 +77,7 @@ function Home() {
         selectedIds={selectedItemIds.finished}
         onSelectionChange={handleSelectionChange}
         onClearSelection={handleClearSelection}
+        searchTerm={searchTerm}
       />
     </div>
   );

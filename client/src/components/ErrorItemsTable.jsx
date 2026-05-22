@@ -14,6 +14,7 @@ export default function ErrorItemsTable({
   selectedIds = [],
   onSelectionChange = () => {},
   onClearSelection = () => {},
+  searchTerm = "",
 }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +39,7 @@ export default function ErrorItemsTable({
 
   useEffect(() => {
     fetchItems();
-  }, [status, refreshKey]);
+  }, [status, refreshKey, searchTerm]);
 
   useEffect(() => {
     const channel = supabase.channel(`errors-realtime-${status}`);
@@ -127,11 +128,15 @@ export default function ErrorItemsTable({
     try {
       setLoading(true);
 
-      const { data, error: fetchError } = await supabase
-        .from("errors")
-        .select("*")
-        .eq("status", status)
-        .order("created_at", { ascending: true });
+      let query = supabase.from("errors").select("*").eq("status", status);
+
+      const term = String(searchTerm || "").trim();
+      if (term.length > 0) {
+        // use case-insensitive LIKE
+        query = query.ilike("workflow_name", `%${term}%`);
+      }
+
+      const { data, error: fetchError } = await query.order("created_at", { ascending: true });
 
       if (fetchError) throw fetchError;
 
