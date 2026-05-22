@@ -1,6 +1,9 @@
 import React from "react";
 
-export default function SearchItem({ searchTerm = "", onSearchChange = () => {} }) {
+export default function SearchItem({
+  searchTerm = "",
+  onSearchChange = () => {},
+}) {
   return (
     <div className="py-4">
       <label className="sr-only">Search by workflow name</label>

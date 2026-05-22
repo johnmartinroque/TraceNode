@@ -136,7 +136,9 @@ export default function ErrorItemsTable({
         query = query.ilike("workflow_name", `%${term}%`);
       }
 
-      const { data, error: fetchError } = await query.order("created_at", { ascending: true });
+      const { data, error: fetchError } = await query.order("created_at", {
+        ascending: true,
+      });
 
       if (fetchError) throw fetchError;
 
