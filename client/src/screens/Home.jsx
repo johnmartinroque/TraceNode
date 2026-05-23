@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import NewItemsTable from "../components/NewItemsTable";
 import FinishedItemsTable from "../components/FinishedItemsTable";
 import SearchItem from "../components/SearchItem";
+import ShowActivities from "../components/ShowActivities";
 
 function Home() {
   const [selectedTable, setSelectedTable] = useState(null);
@@ -62,6 +63,7 @@ function Home() {
   return (
     <div>
       <SearchItem searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <ShowActivities />
       <NewItemsTable
         refreshKey={refreshKey}
         onStatusUpdated={handleStatusUpdated}
