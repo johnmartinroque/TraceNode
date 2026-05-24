@@ -176,6 +176,22 @@ export default function ErrorItemsTable({
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${microseconds}+00`;
   };
 
+  const logDeleteActivity = async (idsToLog) => {
+    if (!idsToLog?.length) return;
+
+    const activityRows = idsToLog.map((errorId) => ({
+      error_id: errorId,
+      action: "Delete",
+      created_at: getTimestamp(),
+    }));
+
+    const { error: activityError } = await supabase
+      .from("activities")
+      .insert(activityRows);
+
+    if (activityError) throw activityError;
+  };
+
   const handleStatusChange = async (newStatus) => {
     try {
       setIsUpdating(true);
@@ -254,6 +270,8 @@ export default function ErrorItemsTable({
         .in("id", idsToDelete);
 
       if (deleteError) throw deleteError;
+
+      await logDeleteActivity(idsToDelete);
 
       setItems((prevItems) =>
         prevItems.filter((item) => !idsToDelete.includes(item.id)),
