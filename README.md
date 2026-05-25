@@ -1,14 +1,14 @@
-# 🧠 QuizNest [Website Link](https://emerg-tech.vercel.app)
+# 🧠 TraceNode
 
+An error tracking and monitoring platform designed for active n8n workflows — helping teams manage, monitor, and resolve workflow execution issues efficiently using React and Supabase.
 
-An interactive quiz platform that lets users test their knowledge, track progress, and monitor learning streaks — built with React, Firebase, and TailwindCSS.
-## Overview
+##Overview
 
-AI Quiz Maker is a frontend-first web application that allows users to instantly generate multiple-choice quizzes on any topic. Students or learners can practice independently, receive instant feedback on their answers, and reinforce their understanding of key concepts.
+TraceNode is a web-based workflow error management system that helps users track failed executions from active n8n workflows in real time. The platform allows teams to monitor unresolved issues, update error statuses, review activity logs, and maintain organized workflow operations through a centralized dashboard.
 
-This project aligns with SDG 4: Quality Education, specifically Target 4.4, by enhancing learning outcomes and skills through accessible, interactive tools.
+This project supports efficient workflow automation management by improving visibility, accountability, and issue resolution for automated systems and integrations.
 
-## 🚀 Features
+##🚀 Features
 ⚠️ Workflow Error Tracking – Monitor failed or problematic n8n workflow executions.
 📂 Error Management – Organize and manage resolved and unresolved workflow errors.
 📝 Activity Logs – Record status changes, updates, and actions performed on errors.
@@ -18,7 +18,7 @@ This project aligns with SDG 4: Quality Education, specifically Target 4.4, by e
 🔍 Search & Filtering – Quickly find workflow errors by status, workflow name, or keywords.
 🗃️ Error History – Keep a historical record of workflow issues and resolutions.
 📱 Responsive Interface – Optimized for desktop and mobile management.
-
+☁️ Supabase Database Integration – Store workflow errors, activities, and user data securely.
 
 
 
