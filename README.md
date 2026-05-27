@@ -4,6 +4,7 @@ An error tracking and monitoring platform designed for active n8n workflows — 
 
 ## n8n Error Workflow
 <img width="747" height="513" alt="Error Workflow" src="https://github.com/user-attachments/assets/fdae07b9-1340-4987-ba1b-8907f7faaf18" />
+<img width="504" height="365" alt="image" src="https://github.com/user-attachments/assets/481923b0-74a5-46f8-94fc-ee9d0713ad45" />
 
 ## Overview
 
