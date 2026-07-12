@@ -35,7 +35,7 @@ function Register() {
       }
     }
 
-    navigate("/login");
+    navigate("/");
   };
 
   return (
