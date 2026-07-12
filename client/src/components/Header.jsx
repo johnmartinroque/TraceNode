@@ -61,19 +61,14 @@ function Header() {
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              className="mr-3 h-6 sm:h-9"
-              alt="Logo"
-            />
             <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-              Flowbite
+              TraceNode
             </span>
           </Link>
 
           {/* Right Side */}
           <div
-            className="flex items-center lg:order-2 relative"
+            className="flex items-center lg:order-2 relative ml-auto"
             ref={dropdownRef}
           >
             {user ? (
@@ -130,7 +125,8 @@ function Header() {
             )}
           </div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links hidden for now */}
+          {/*
           <div className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">
             <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
               <li>
@@ -150,7 +146,7 @@ function Header() {
 
               <li>
                 <NavLink
-                  to="/users"
+                  to="/about"
                   className={({ isActive }) =>
                     `block py-2 pr-4 pl-3 lg:p-0 ${
                       isActive
@@ -159,11 +155,12 @@ function Header() {
                     }`
                   }
                 >
-                  Users
+                  About
                 </NavLink>
               </li>
             </ul>
           </div>
+          */}
         </div>
       </nav>
     </header>

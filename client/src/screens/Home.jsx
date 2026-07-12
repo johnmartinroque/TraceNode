@@ -63,7 +63,11 @@ function Home() {
   return (
     <div>
       <SearchItem searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-      <ShowActivities />
+      {/* 
+
+
+<ShowActivities />
+      */}
       <NewItemsTable
         refreshKey={refreshKey}
         onStatusUpdated={handleStatusUpdated}

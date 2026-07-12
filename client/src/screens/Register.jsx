@@ -35,7 +35,6 @@ function Register() {
       }
     }
 
-    alert("Check your email for verification!");
     navigate("/login");
   };
 
