@@ -3,6 +3,7 @@ import NewItemsTable from "../components/NewItemsTable";
 import FinishedItemsTable from "../components/FinishedItemsTable";
 import SearchItem from "../components/SearchItem";
 import ShowActivities from "../components/ShowActivities";
+import ErrorNotif from "../components/ErrorToast";
 
 function Home() {
   const [selectedTable, setSelectedTable] = useState(null);
@@ -85,6 +86,7 @@ function Home() {
         onClearSelection={handleClearSelection}
         searchTerm={searchTerm}
       />
+      <ErrorNotif />
     </div>
   );
 }
