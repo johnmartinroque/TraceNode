@@ -3,7 +3,7 @@ import NewItemsTable from "../components/NewItemsTable";
 import FinishedItemsTable from "../components/FinishedItemsTable";
 import SearchItem from "../components/SearchItem";
 import ShowActivities from "../components/ShowActivities";
-import ErrorNotif from "../components/ErrorToast";
+import ErrorNotif from "../components/ErrorNotif";
 
 function Home() {
   const [selectedTable, setSelectedTable] = useState(null);
