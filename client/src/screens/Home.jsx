@@ -69,24 +69,28 @@ function Home() {
 
 <ShowActivities />
       */}
-      <NewItemsTable
-        refreshKey={refreshKey}
-        onStatusUpdated={handleStatusUpdated}
-        selectedIds={selectedItemIds.new}
-        onSelectionChange={handleSelectionChange}
-        onClearSelection={handleClearSelection}
-        searchTerm={searchTerm}
-      />
+      <div className="pb-20">
+        <NewItemsTable
+          refreshKey={refreshKey}
+          onStatusUpdated={handleStatusUpdated}
+          selectedIds={selectedItemIds.new}
+          onSelectionChange={handleSelectionChange}
+          onClearSelection={handleClearSelection}
+          searchTerm={searchTerm}
+        />
+      </div>
 
-      <FinishedItemsTable
-        refreshKey={refreshKey}
-        onStatusUpdated={handleStatusUpdated}
-        selectedIds={selectedItemIds.finished}
-        onSelectionChange={handleSelectionChange}
-        onClearSelection={handleClearSelection}
-        searchTerm={searchTerm}
-      />
-      <ErrorNotif />
+      <div className="pb-20">
+        <FinishedItemsTable
+          refreshKey={refreshKey}
+          onStatusUpdated={handleStatusUpdated}
+          selectedIds={selectedItemIds.finished}
+          onSelectionChange={handleSelectionChange}
+          onClearSelection={handleClearSelection}
+          searchTerm={searchTerm}
+        />
+        <ErrorNotif />
+      </div>
     </div>
   );
 }
