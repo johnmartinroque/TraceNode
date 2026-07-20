@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 import StatusPopover from "./StatusPopover";
 import RemarksEditor from "./RemarksEditor";
 import DeleteItemModal from "./DeleteItemModal";
+import Loader from "./Loader";
 
 export default function ErrorItemsTable({
   status,
