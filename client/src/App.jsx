@@ -7,7 +7,6 @@ import Login from "./screens/Login";
 import Register from "./screens/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Users from "./screens/Users";
-import Footer from "./components/Footer";
 
 function HomeScreen() {
   const userInfo = localStorage.getItem("userInfo");
@@ -38,7 +37,6 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/users" element={<Users />} />
         </Routes>
-        <Footer />
       </Router>
     </div>
   );
