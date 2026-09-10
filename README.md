@@ -3,6 +3,7 @@
 An error tracking and monitoring platform designed for active n8n workflows — helping teams manage, monitor, and resolve workflow execution issues efficiently using React and Supabase.
 
 ## n8n Error Workflow
+
 <img width="747" height="513" alt="Error Workflow" src="https://github.com/user-attachments/assets/fdae07b9-1340-4987-ba1b-8907f7faaf18" />
 <img width="504" height="365" alt="image" src="https://github.com/user-attachments/assets/481923b0-74a5-46f8-94fc-ee9d0713ad45" />
 
@@ -13,6 +14,7 @@ TraceNode is a web-based workflow error management system that helps users track
 This project supports efficient workflow automation management by improving visibility, accountability, and issue resolution for automated systems and integrations.
 
 ## 🚀 Features
+
 ⚠️ Workflow Error Tracking – Monitor failed or problematic n8n workflow executions.
 📂 Error Management – Organize and manage resolved and unresolved workflow errors.
 📝 Activity Logs – Record status changes, updates, and actions performed on errors.
@@ -24,5 +26,16 @@ This project supports efficient workflow automation management by improving visi
 📱 Responsive Interface – Optimized for desktop and mobile management.
 ☁️ Supabase Database Integration – Store workflow errors, activities, and user data securely.
 
+## Run with Docker
 
+Build and start the client using the Supabase values from the client environment file:
 
+```powershell
+docker compose --env-file client/.env up --build
+```
+
+Then open http://localhost:8080. Stop it with:
+
+```powershell
+docker compose --env-file client/.env down
+```
